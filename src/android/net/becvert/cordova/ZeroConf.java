@@ -459,12 +459,8 @@ public class ZeroConf extends CordovaPlugin {
             callbacks.put(type + domain, callbackContext);
 
             for (JmDNS browser : browsers) {
-                try{
-                    browser.addServiceListener(type + domain, this);
-                    Log.d(TAG, "Added Service Listener for " + type + domain + " to a JmDNS browser.");
-                }catch(IOException e){
-                    Log.e(TAG, "Error adding service listener to JmDNS browser: " + e.getMessage(), e);
-                }
+                browser.addServiceListener(type + domain, this);
+                Log.d(TAG, "Added Service Listener for " + type + domain + " to a JmDNS browser.");
             }
 
         }
