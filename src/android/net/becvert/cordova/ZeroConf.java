@@ -431,15 +431,25 @@ public class ZeroConf extends CordovaPlugin {
 
         private Map<String, CallbackContext> callbacks = new HashMap<String, CallbackContext>();
 
+        private JmDNS jmdns;
+
         public BrowserManager(List<InetAddress> addresses, String hostname) throws IOException {
 
             lock.acquire();
 
             if (addresses == null || addresses.size() == 0) {
+                Log.d(TAG, "Broswer Manager no addresses");
                 browsers.add(JmDNS.create(null, hostname));
             } else {
+                Log.d(TAG, "Broswer Manager has addresses");
                 for (InetAddress addr : addresses) {
-                    browsers.add(JmDNS.create(addr, hostname));
+                    try{
+                        jmdns = JmDNS.create(addr, hostname);
+                        browsers.add(jmdns);
+                        Log.d(TAG, "Created JmDNS for addr " + addr.toString());
+                    }catch(IOException e){
+                        Log.e(TAG, "Error creating JmDNS for addr " + e.getMessage(), e);
+                    }
                 }
             }
         }
@@ -449,7 +459,12 @@ public class ZeroConf extends CordovaPlugin {
             callbacks.put(type + domain, callbackContext);
 
             for (JmDNS browser : browsers) {
-                browser.addServiceListener(type + domain, this);
+                try{
+                    browser.addServiceListener(type + domain, this);
+                    Log.d(TAG, "Added Service Listener for " + type + domain + " to a JmDNS browser.");
+                }catch(IOException e){
+                    Log.e(TAG, "Error adding service listener to JmDNS browser: " + e.getMessage(), e);
+                }
             }
 
         }
