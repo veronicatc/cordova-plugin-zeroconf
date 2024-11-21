@@ -374,6 +374,7 @@ public class ZeroConf extends CordovaPlugin {
             } else {
                 for (InetAddress addr : addresses) {
                     publishers.add(JmDNS.create(addr, hostname));
+                    Log.d(TAG, "RegistrationManager Publisher added for inet address " + addr.toString());
                 }
             }
 
@@ -390,6 +391,8 @@ public class ZeroConf extends CordovaPlugin {
                 }
             }
 
+            Log.d(TAG, "register txtRecord " + txtRecord.toString());
+            
             ServiceInfo aService = null;
             for (JmDNS publisher : publishers) {
                 ServiceInfo service = ServiceInfo.create(type + domain, name, port, 0, 0, txtRecord);
